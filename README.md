@@ -2,7 +2,9 @@
 A little discord bot I made in python to show crafting recipes of items in minecraft
 
 ## Usage
-> !mc item_name
+```
+!mc item_name
+```
 NOTE: item name must have underscore if longer than 2 words.
 
 ## Version
