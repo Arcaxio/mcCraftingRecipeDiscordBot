@@ -12,4 +12,5 @@ Minecraft (Java) 1.12.1
 
 ## Credits
 [minecraft-data](https://github.com/PrismarineJS/minecraft-data)
+
 [minecraft-assets](https://github.com/PrismarineJS/minecraft-assets/tree/master)
