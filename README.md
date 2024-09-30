@@ -11,5 +11,5 @@ NOTE: item name must have underscore if longer than 2 words.
 Minecraft (Java) 1.12.1
 
 ## Credits
-[minecraft-data]([https://pages.github.com/](https://github.com/PrismarineJS/minecraft-data))
-[minecraft-assets]([https://pages.github.com/](https://github.com/PrismarineJS/minecraft-assets/tree/master))
+[minecraft-data]([https://pages.github.com/](https://github.com/PrismarineJS/minecraft-data)
+[minecraft-assets]([https://pages.github.com/](https://github.com/PrismarineJS/minecraft-assets/tree/master)
