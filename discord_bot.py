@@ -61,39 +61,74 @@ def get_item_name_by_id(item_id):
 # Format the recipe message by replacing item IDs with item names, with padding for alignment
 def format_recipe_message_with_item_names(recipe, item_name):
     try:
-        in_shape = recipe[0].get('inShape', [])
-        all_items = []
-
-        # Collect all item names for calculating the max length
-        for row in in_shape:
-            for item in row:
-                if item is not None:
-                    item_name_from_id = get_item_name_by_id(item)
-                    all_items.append(item_name_from_id if item_name_from_id else "unknown_item")
-
-        # Find the max length of the item names
-        max_length = max([len(item) for item in all_items] or [0])
-
-        formatted_shape = ""
-        for row in in_shape:
-            formatted_row = []
-            for item in row:
-                if item is not None:
-                    item_name_from_id = get_item_name_by_id(item)
-                    # Pad the item name so that all entries are the same length
-                    padded_item = f"{item_name_from_id:{max_length}}"
-                    formatted_row.append(f"[{padded_item}]")
-                else:
-                    # Pad the null with spaces to match the max length
-                    formatted_row.append(f"[{' ' * max_length}]")
-            formatted_shape += " ".join(formatted_row) + "\n"
+        all_recipe_variations = []
         
-        return f"Crafting recipe for {item_name}:\n{formatted_shape}"
+        for recipe_entry in recipe:
+            # Prioritize "inShape" if it exists; otherwise, fall back to "ingredients"
+            if 'inShape' in recipe_entry:
+                in_shape = recipe_entry.get('inShape', [])
+                all_items = []
+
+                # Collect all item names for calculating the max length
+                for row in in_shape:
+                    for item in row:
+                        if item is not None:
+                            item_name_from_id = get_item_name_by_id(item)
+                            all_items.append(item_name_from_id if item_name_from_id else "unknown_item")
+
+                # Find the max length of the item names
+                max_length = max([len(item) for item in all_items] or [0])
+
+                formatted_shape = ""
+                for row in in_shape:
+                    formatted_row = []
+                    for item in row:
+                        if item is not None:
+                            item_name_from_id = get_item_name_by_id(item)
+                            # Pad the item name so that all entries are the same length
+                            padded_item = f"{item_name_from_id:{max_length}}"
+                            formatted_row.append(f"[{padded_item}]")
+                        else:
+                            # Pad the null with spaces to match the max length
+                            formatted_row.append(f"[{' ' * max_length}]")
+                    formatted_shape += " ".join(formatted_row) + "\n"
+
+                all_recipe_variations.append(formatted_shape.strip())
+
+            elif 'ingredients' in recipe_entry:
+                ingredients = recipe_entry.get('ingredients', [])
+                all_items = []
+
+                # Collect all item names for calculating the max length
+                for ingredient in ingredients:
+                    if ingredient is not None:
+                        item_name_from_id = get_item_name_by_id(ingredient)
+                        all_items.append(item_name_from_id if item_name_from_id else "unknown_item")
+
+                # Find the max length of the item names
+                max_length = max([len(item) for item in all_items] or [0])
+
+                formatted_ingredients = ""
+                for ingredient in ingredients:
+                    if ingredient is not None:
+                        item_name_from_id = get_item_name_by_id(ingredient)
+                        # Pad the item name so that all entries are the same length
+                        padded_item = f"{item_name_from_id:{max_length}}"
+                        formatted_ingredients += f"[{padded_item}] "
+                    else:
+                        # Pad the null with spaces to match the max length
+                        formatted_ingredients += f"[{' ' * max_length}] "
+
+                all_recipe_variations.append(formatted_ingredients.strip())
+
+        # Combine all recipe variations with "OR"
+        combined_recipes = "\nOR\n".join(all_recipe_variations)
+        return f"Crafting recipe for {item_name}:\n{combined_recipes}"
+
     except Exception as e:
         print(f"Error in format_recipe_message_with_item_names: {e}")
         traceback.print_exc()
         return f"Error: Could not format the recipe for {item_name}."
-
 
 # Handle the !mc command with error handling
 async def handle_mc_command(message, item_name):
